@@ -28,7 +28,7 @@ with open(cred_path, "r") as f:
     creds = json.load(f)
 
 auth_endpoint = 'https://iam.bluemix.net/oidc/token'
-service_endpoint = 'https://s3.us.cloud-object-storage.appdomain.cloud'
+service_endpoint = 'https://s3.us-east.cloud-object-storage.appdomain.cloud'
 
 # Store relevant details for interacting with IBM COS store and uploading data
 cos = ibm_boto3.resource('s3',
