@@ -59,9 +59,9 @@ os.makedirs(savepath, exist_ok=True)
 filelist = os.listdir(savepath)
 for file in tqdm(files):
     ext = file.key.split('.')[-1]
-    if 'mp4' not in ext and 'avi' not in ext:
+    if 'png' not in ext:
         continue
-    filename = file.key.split('/')[-1]
+    filename = os.path.join(file.key.split('/')[-2], file.key.split('/')[-1])
     if filename in filelist:
         continue
     else:
