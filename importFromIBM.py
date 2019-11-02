@@ -28,7 +28,7 @@ with open(cred_path, "r") as f:
     creds = json.load(f)
 
 auth_endpoint = 'https://iam.bluemix.net/oidc/token'
-service_endpoint = 'https://s3.us.cloud-object-storage.appdomain.cloud'
+service_endpoint = 'https://s3.us-east.cloud-object-storage.appdomain.cloud'
 
 # Store relevant details for interacting with IBM COS store and uploading data
 cos = ibm_boto3.resource('s3',
@@ -59,9 +59,9 @@ os.makedirs(savepath, exist_ok=True)
 filelist = os.listdir(savepath)
 for file in tqdm(files):
     ext = file.key.split('.')[-1]
-    if 'mp4' not in ext and 'avi' not in ext:
+    if 'png' not in ext:
         continue
-    filename = file.key.split('/')[-1]
+    filename = os.path.join(file.key.split('/')[-2], file.key.split('/')[-1])
     if filename in filelist:
         continue
     else:
