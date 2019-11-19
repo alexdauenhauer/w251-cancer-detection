@@ -49,6 +49,9 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
   if not gfile.Exists(image_dir):
     tf.logging.error("Image directory '" + image_dir + "' not found.")
     return None
+  for file in ['train_list.txt', 'test_list.txt', 'val_list.txt']:
+    if file in os.listdir(image_dir):
+      os.remove(os.path.join(image_dir, file))
   result = collections.OrderedDict()
   sub_dirs = [
     os.path.join(image_dir,item)
@@ -110,6 +113,18 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
         'testing': testing_images,
         'validation': validation_images,
     }
+    with open(os.path.join(image_dir, 'train_list.txt'), 'a') as f:
+      files = [os.path.join(image_dir, dir_name, filename)
+               for filename in training_images]
+      f.write('\n'.join(files))
+    with open(os.path.join(image_dir, 'test_list.txt'), 'a') as f:
+      files = [os.path.join(image_dir, dir_name, filename)
+               for filename in testing_images]
+      f.write('\n'.join(files))
+    with open(os.path.join(image_dir, 'val_list.txt'), 'a') as f:
+      files = [os.path.join(image_dir, dir_name, filename)
+               for filename in validation_images]
+      f.write('\n'.join(files))
   return result
 
 
@@ -730,11 +745,13 @@ def add_evaluation_step(result_tensor, ground_truth_tensor):
   return evaluation_step, prediction
 
 
-def save_graph_to_file(sess, graph, graph_file_name):
+def save_graph_to_file(sess, graph, graph_file_name, export_dir=None):
   output_graph_def = graph_util.convert_variables_to_constants(
       sess, graph.as_graph_def(), [FLAGS.final_tensor_name])
   with gfile.FastGFile(graph_file_name, 'wb') as f:
     f.write(output_graph_def.SerializeToString())
+  if export_dir:
+    tf.compat.v1.saved_model.simple_save(sess, export_dir)
   return
 
 
@@ -1043,7 +1060,8 @@ def main(_):
 
     # Write out the trained graph and labels with the weights stored as
     # constants.
-    save_graph_to_file(sess, graph, FLAGS.output_graph)
+    os.makedirs(FLAGS.export_dir, exist_ok=True)
+    save_graph_to_file(sess, graph, FLAGS.output_graph, FLAGS.export_dir)
     with gfile.FastGFile(FLAGS.output_labels, 'w') as f:
       f.write('\n'.join(image_lists.keys()) + '\n')
 
@@ -1165,6 +1183,14 @@ if __name__ == '__main__':
       Path to classify_image_graph_def.pb,
       imagenet_synset_to_human_label_map.txt, and
       imagenet_2012_challenge_label_map_proto.pbtxt.\
+      """
+  )
+  parser.add_argument(
+      '--export_dir',
+      type=str,
+      default='/tmp/saved_model',
+      help="""\
+      path to save the full SavedModel\
       """
   )
   parser.add_argument(
