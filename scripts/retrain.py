@@ -1,4 +1,3 @@
-# %%
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -21,7 +20,7 @@ from tensorflow.python.framework import graph_util
 from tensorflow.python.framework import tensor_shape
 from tensorflow.python.platform import gfile
 from tensorflow.python.util import compat
-# %%
+
 FLAGS = None
 
 # These are all parameters that are tied to the particular model architecture
