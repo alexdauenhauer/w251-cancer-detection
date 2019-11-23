@@ -40,7 +40,7 @@ def evaluate_graph(graph_file_name, image_dir):
     # image_lists = retrain.create_image_lists(
     #     image_dir, testing_percentage,
     #     validation_percentage)
-    with open(os.path.join(image_dir, 'image_lists.pickle'), 'wb') as f:
+    with open(os.path.join(image_dir, 'image_lists.pickle'), 'rb') as f:
         image_lists = pickle.load(f)
     class_count = len(image_lists.keys())
 
@@ -95,3 +95,9 @@ if __name__ == "__main__":
     accuracy, xent = evaluate_graph(args.graph_file_name, args.image_dir)
     print('Accuracy: %g' % accuracy)
     print('Cross Entropy: %g' % xent)
+
+'''
+python -m scripts.evaluate \
+    --image_dir=/data/combined_data/ \
+    --graph_file_name=/data/tf/tf_files/retrained_graph.pb
+'''
