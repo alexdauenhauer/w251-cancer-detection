@@ -751,7 +751,7 @@ def save_graph_to_file(sess, graph, graph_file_name, export_dir=None):
   with gfile.FastGFile(graph_file_name, 'wb') as f:
     f.write(output_graph_def.SerializeToString())
   if export_dir:
-    tf.compat.v1.saved_model.simple_save(sess, export_dir)
+    tf.compat.v1.saved_model.simple_save(sess, export_dir, inputs='input:0', outputs=[FLAGS.final_tensor_name])
   return
 
 
