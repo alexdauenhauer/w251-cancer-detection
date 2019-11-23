@@ -745,13 +745,11 @@ def add_evaluation_step(result_tensor, ground_truth_tensor):
   return evaluation_step, prediction
 
 
-def save_graph_to_file(sess, graph, graph_file_name, export_dir=None):
+def save_graph_to_file(sess, graph, graph_file_name):
   output_graph_def = graph_util.convert_variables_to_constants(
       sess, graph.as_graph_def(), [FLAGS.final_tensor_name])
   with gfile.FastGFile(graph_file_name, 'wb') as f:
     f.write(output_graph_def.SerializeToString())
-  if export_dir:
-    tf.compat.v1.saved_model.simple_save(sess, export_dir, inputs='input:0', outputs=[FLAGS.final_tensor_name])
   return
 
 
@@ -1060,8 +1058,9 @@ def main(_):
 
     # Write out the trained graph and labels with the weights stored as
     # constants.
-    os.makedirs(FLAGS.export_dir, exist_ok=True)
-    save_graph_to_file(sess, graph, FLAGS.output_graph, FLAGS.export_dir)
+    # os.makedirs(FLAGS.export_dir, exist_ok=True)
+    # save_graph_to_file(sess, graph, FLAGS.output_graph, FLAGS.export_dir)
+    save_graph_to_file(sess, graph, FLAGS.output_graph)
     with gfile.FastGFile(FLAGS.output_labels, 'w') as f:
       f.write('\n'.join(image_lists.keys()) + '\n')
 
