@@ -63,7 +63,7 @@ bucket = cos.Bucket('w251-fp-bucket')
 files = list(bucket.objects.all())
 if args.n_images != -1:
     idx = np.random.randint(0, len(files), size=args.n_images)
-    files = files[idx]
+    files = [f for i, f in enumerate(files) if i in idx]
 
 # %%
 savepath = args.image_dir
