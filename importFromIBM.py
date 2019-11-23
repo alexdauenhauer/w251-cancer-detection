@@ -10,7 +10,6 @@ import sys
 import time
 import argparse
 
-import cv2
 import ibm_boto3
 import numpy as np
 import pandas as pd
@@ -19,11 +18,20 @@ from tqdm import tqdm
 
 # %%
 parser = argparse.ArgumentParser()
-parser.add_argument('--path', help='path to save vids at')
+parser.add_argument('--cred_path',
+                    default='/home/alex/Documents/MIDS/w251/creds/',
+                    help='path to bucket credentials')
+parser.add_argument('--image_dir',
+                    default='/data/combined_data/',
+                    help='path to save images')
+parser.add_argument('--n_images',
+                    type=int,
+                    default=-1,
+                    help='number of images to pull from cloud, if -1 pull all images')
 args = parser.parse_args()
 
 # %%
-cred_path = "/root/creds/w251-credentials.json"
+cred_path = os.path.join(args.cred_path, "w251-credentials.json")
 with open(cred_path, "r") as f:
     creds = json.load(f)
 
@@ -53,13 +61,17 @@ cos = ibm_boto3.resource('s3',
 bucket = cos.Bucket('w251-fp-bucket')
 # %%
 files = list(bucket.objects.all())
+if args.n_images != -1:
+    idx = np.random.randint(0, len(files), size=args.n_images)
+    files = files[idx]
+
 # %%
-savepath = args.path
+savepath = args.image_dir
 os.makedirs(savepath, exist_ok=True)
 filelist = os.listdir(savepath)
 for file in tqdm(files):
     ext = file.key.split('.')[-1]
-    if 'png' not in ext:
+    if '.jpg' not in ext:
         continue
     filename = os.path.join(file.key.split('/')[-2], file.key.split('/')[-1])
     if filename in filelist:

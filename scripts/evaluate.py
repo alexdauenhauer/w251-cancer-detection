@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import sys
 import argparse
@@ -11,6 +12,7 @@ import pickle
 import numpy as np
 import PIL.Image as Image
 import tensorflow as tf
+tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 import scripts.retrain as retrain
 from scripts.count_ops import load_graph
