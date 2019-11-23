@@ -32,16 +32,16 @@ def evaluate_graph(graph_file_name, image_dir):
             logits=logits))
 
     # image_dir = 'tf_files/breast-cancer'
-    # testing_percentage = 10
-    # validation_percentage = 10
-    # validation_batch_size = 100
+    testing_percentage = 10
+    validation_percentage = 10
+    validation_batch_size = -1
     category = 'testing'
 
-    # image_lists = retrain.create_image_lists(
-    #     image_dir, testing_percentage,
-    #     validation_percentage)
-    with open(os.path.join(image_dir, 'image_lists.pickle'), 'rb') as f:
-        image_lists = pickle.load(f)
+    image_lists = retrain.create_image_lists(
+        image_dir, testing_percentage,
+        validation_percentage)
+    # with open(os.path.join(image_dir, 'image_lists.pickle'), 'rb') as f:
+    #     image_lists = pickle.load(f)
     class_count = len(image_lists.keys())
 
     ground_truths = []
