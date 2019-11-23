@@ -71,9 +71,11 @@ os.makedirs(savepath, exist_ok=True)
 filelist = os.listdir(savepath)
 for file in tqdm(files):
     ext = file.key.split('.')[-1]
-    if '.jpg' not in ext:
+    if 'jpg' not in ext.lower():
         continue
-    filename = os.path.join(file.key.split('/')[-2], file.key.split('/')[-1])
+    subdir = file.key.split('/')[-2]
+    os.makedirs(os.path.join(savepath, subdir), exist_ok=True)
+    filename = os.path.join(subdir, file.key.split('/')[-1])
     if filename in filelist:
         continue
     else:
