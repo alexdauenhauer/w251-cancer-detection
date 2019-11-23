@@ -69,7 +69,8 @@ if __name__ == "__main__":
     parser.add_argument("--image_dir", help="path to top-level images folder")
     parser.add_argument("--graph", help="graph/model to be executed")
     parser.add_argument("--labels", help="name of file containing labels")
+    parser.add_argument("--output_results", help="name of output_file")
     args = parser.parse_args()
     results_dict = labelImages(args.image_dir, args.graph, args.labels)
-    with open('../results_dict.pickle', 'wb') as f:
+    with open(args.output_results, 'wb') as f:
         pickle.dump(results_dict, f, protocol=-1)
