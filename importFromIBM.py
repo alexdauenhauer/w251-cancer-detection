@@ -12,7 +12,7 @@ import argparse
 
 import ibm_boto3
 import numpy as np
-import pandas as pd
+# import pandas as pd
 from ibm_botocore.client import Config
 from tqdm import tqdm
 
