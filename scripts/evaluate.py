@@ -16,10 +16,10 @@ import scripts.retrain as retrain
 from scripts.count_ops import load_graph
 
 
-def evaluate_graph(graph_file_name, image_dir):
+def evaluate_graph(graph_file_name, image_dir, n_classes=2):
     with load_graph(graph_file_name).as_default() as graph:
         ground_truth_input = tf.placeholder(
-            tf.float32, [None, 5], name='GroundTruthInput')
+            tf.float32, [None, n_classes], name='GroundTruthInput')
 
         image_buffer_input = graph.get_tensor_by_name('input:0')
         final_tensor = graph.get_tensor_by_name('final_result:0')
@@ -32,16 +32,16 @@ def evaluate_graph(graph_file_name, image_dir):
             logits=logits))
 
     # image_dir = 'tf_files/breast-cancer'
-    testing_percentage = 10
-    validation_percentage = 10
-    validation_batch_size = -1
+    # testing_percentage = 10
+    # validation_percentage = 10
+    # validation_batch_size = -1
     category = 'testing'
 
-    image_lists = retrain.create_image_lists(
-        image_dir, testing_percentage,
-        validation_percentage)
-    # with open(os.path.join(image_dir, 'image_lists.pickle'), 'rb') as f:
-    #     image_lists = pickle.load(f)
+    # image_lists = retrain.create_image_lists(
+    #     image_dir, testing_percentage,
+    #     validation_percentage)
+    with open(os.path.join(image_dir, 'image_lists.pickle'), 'rb') as f:
+        image_lists = pickle.load(f)
     class_count = len(image_lists.keys())
 
     ground_truths = []
@@ -89,7 +89,13 @@ if __name__ == "__main__":
         '--graph_file_name',
         type=str,
         default='/data/tf/tf_files/retrained_graph.pb',
-        help='Path to folders of labeled images.'
+        help='Path to graph.'
+    )
+    parser.add_argument(
+        '--n_classes',
+        type=int,
+        default=2,
+        help='number of classes.'
     )
     args = parser.parse_args()
     accuracy, xent = evaluate_graph(args.graph_file_name, args.image_dir)
