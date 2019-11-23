@@ -11,6 +11,7 @@ import random
 import re
 import sys
 import tarfile
+import pickle
 
 import numpy as np
 from six.moves import urllib
@@ -113,6 +114,8 @@ def create_image_lists(image_dir, testing_percentage, validation_percentage):
         'testing': testing_images,
         'validation': validation_images,
     }
+    with open(os.path.join(image_dir, 'image_lists.pickle'), 'wb') as f:
+      pickle.dump(result, f)
     with open(os.path.join(image_dir, 'train_list.txt'), 'a') as f:
       files = [os.path.join(image_dir, dir_name, filename)
                for filename in training_images]
